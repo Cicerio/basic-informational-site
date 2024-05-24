@@ -1,12 +1,10 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const { createServer } = require('node:http');
 const hostname = 'localhost';
 const port = 8080;
 const server = http.createServer((req, res) => {
-  const filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url);
-
+  const filePath = path.join(__dirname, buildURL(req.url));
   // Check if the requested file exists
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
@@ -35,3 +33,24 @@ const server = http.createServer((req, res) => {
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+/**
+ * Builds the corresponding HTML file path based on the given URL.
+ *
+ * @param {string} url - The URL to be converted into a file path.
+ * @return {string} The corresponding HTML file path.
+ */
+function buildURL(url){
+  switch (url){
+    case '/':
+      return 'index.html';
+    case '/about':
+      return 'about.html';
+    case '/contact-me':
+      return 'contact-me.html';
+    case '/styles.css':
+      return 'styles.css';
+    default:
+      return '404.html';
+  }
+}
